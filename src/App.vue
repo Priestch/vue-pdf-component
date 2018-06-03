@@ -1,17 +1,22 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <pdf :pdf-data="pdfData" class="pdf-view-container"></pdf>
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import PDF from "./components/PDF.vue";
+import pdfData from "./demo_data";
 
 export default {
   name: "app",
   components: {
-    HelloWorld
+    pdf: PDF
+  },
+  data() {
+    return {
+      pdfData: atob(pdfData)
+    };
   }
 };
 </script>
@@ -24,5 +29,11 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.pdf-view-container {
+  height: 100vh;
+  width: 80%;
+  margin: 0 auto;
 }
 </style>
