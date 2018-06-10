@@ -1,37 +1,34 @@
 <template>
   <div id="app">
-    <pdf :pdf-data="pdfData" class="pdf-view-container"></pdf>
+    <pdf-application></pdf-application>
   </div>
 </template>
 
 <script>
-import PDF from "./components/PDF.vue";
-import pdfData from "./demo_data";
+import PDFApplication from "./components/PDFApplication";
 
 export default {
   name: "app",
   components: {
-    pdf: PDF
-  },
-  data() {
-    return {
-      pdfData: atob(pdfData)
-    };
+    pdfApplication: PDFApplication
   }
 };
 </script>
 
 <style lang="scss">
+body {
+  margin: 0;
+}
+
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 
-.pdf-view-container {
+.pdf-application {
   height: 100vh;
   width: 80%;
   margin: 0 auto;
