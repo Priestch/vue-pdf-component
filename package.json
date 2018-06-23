@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "lint:style": "vue-cli-service lint:style"
   },
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.8",
@@ -16,6 +17,7 @@
     "vue": "^2.5.16"
   },
   "devDependencies": {
+    "@ascendancyy/vue-cli-plugin-stylelint": "^1.1.0",
     "@vue/cli-plugin-babel": "^3.0.0-rc.3",
     "@vue/cli-plugin-eslint": "^3.0.0-rc.3",
     "@vue/cli-service": "^3.0.0-rc.3",
@@ -23,6 +25,7 @@
     "lint-staged": "^6.0.0",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",
+    "stylelint-config-standard": "^18.2.0",
     "vue-template-compiler": "^2.5.16"
   },
   "browserslist": [
@@ -39,6 +42,9 @@
     ],
     "*.vue": [
       "vue-cli-service lint"
+    ],
+    "*.{vue,htm,html,css,sss,less,scss}": [
+      "vue-cli-service lint:style"
     ]
   }
 }
