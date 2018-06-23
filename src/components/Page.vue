@@ -1,13 +1,22 @@
 <template>
-  <div class="page-view" :data-page-number="pageNumber" :style="viewportStyle">
-    <div class="page-view__canvas-wrapper" :style="viewportStyle" v-if="!loading">
-      <canvas :id="canvasId"></canvas>
+  <div 
+    :data-page-number="pageNumber" 
+    :style="viewportStyle" 
+    class="page-view">
+    <div 
+      v-if="!loading" 
+      :style="viewportStyle" 
+      class="page-view__canvas-wrapper">
+      <canvas :id="canvasId"/>
     </div>
-    <div class="page-view__text-wrapper" v-if="!loading">
-    </div>
+    <div 
+      v-if="!loading" 
+      class="page-view__text-wrapper"/>
 
-    <div class="page-view__loading fa-2x" v-if="loading">
-      <i class="fas fa-spinner fa-pulse"></i>
+    <div 
+      v-if="loading" 
+      class="page-view__loading fa-2x">
+      <i class="fas fa-spinner fa-pulse"/>
     </div>
   </div>
 </template>
@@ -28,9 +37,6 @@ export default {
       viewport: null,
     };
   },
-  created() {
-    this.initPage();
-  },
   computed: {
     canvasId() {
       return `page${this.pageNumber}`;
@@ -50,6 +56,9 @@ export default {
         height: `${this.height}px`,
       };
     },
+  },
+  created() {
+    this.initPage();
   },
   methods: {
     async initPage() {

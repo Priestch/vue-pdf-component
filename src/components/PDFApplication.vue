@@ -1,6 +1,6 @@
 <template>
   <div class="pdf-application">
-    <pdf :pdf-data="pdfData"></pdf>
+    <pdf :pdf-data="pdfData"/>
   </div>
 </template>
 

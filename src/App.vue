@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <pdf-application></pdf-application>
+    <pdf-application/>
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 import PDFApplication from './components/PDFApplication';
 
 export default {
-  name: 'app',
+  name: 'App',
   components: {
     pdfApplication: PDFApplication,
   },

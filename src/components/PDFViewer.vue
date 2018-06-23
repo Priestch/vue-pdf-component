@@ -1,6 +1,12 @@
 <template>
-  <div class="viewer" @scroll="onScroll()" v-if="pdfDocument">
-    <pdf-page v-for="page in pdfDocument.numPages" :key="page" :page-number="page"></pdf-page>
+  <div 
+    v-if="pdfDocument" 
+    class="viewer" 
+    @scroll="onScroll()">
+    <pdf-page 
+      v-for="page in pdfDocument.numPages" 
+      :key="page" 
+      :page-number="page"/>
   </div>
 </template>
 
@@ -38,15 +44,6 @@ export default {
       pagesCount_: 0,
     };
   },
-  async created() {
-    await this.initPDFDocument();
-  },
-  mounted() {},
-  provide() {
-    return {
-      pdfViewer: this,
-    };
-  },
   computed: {
     pagesCount() {
       return this.pages.length;
@@ -59,6 +56,15 @@ export default {
         this._resetView();
       }
     },
+  },
+  async created() {
+    await this.initPDFDocument();
+  },
+  mounted() {},
+  provide() {
+    return {
+      pdfViewer: this,
+    };
   },
   methods: {
     async initPDFDocument() {
