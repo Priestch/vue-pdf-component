@@ -1,11 +1,11 @@
 <template>
-  <div 
-    v-if="pdfDocument" 
-    class="viewer" 
+  <div
+    v-if="pdfDocument"
+    class="viewer"
     @scroll="onScroll()">
-    <pdf-page 
-      v-for="page in pdfDocument.numPages" 
-      :key="page" 
+    <pdf-page
+      v-for="page in pdfDocument.numPages"
+      :key="page"
       :page-number="page"/>
   </div>
 </template>
@@ -30,6 +30,7 @@ export default {
   props: {
     pdfData: {
       required: true,
+      type: String,
     },
   },
   data() {

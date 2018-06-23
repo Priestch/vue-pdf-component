@@ -17,6 +17,7 @@ export default {
     config: {
       type: Object,
       required: false,
+      default: () => {},
     },
   },
   data() {

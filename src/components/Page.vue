@@ -1,20 +1,20 @@
 <template>
-  <div 
-    :data-page-number="pageNumber" 
-    :style="viewportStyle" 
+  <div
+    :data-page-number="pageNumber"
+    :style="viewportStyle"
     class="page-view">
-    <div 
-      v-if="!loading" 
-      :style="viewportStyle" 
+    <div
+      v-if="!loading"
+      :style="viewportStyle"
       class="page-view__canvas-wrapper">
       <canvas :id="canvasId"/>
     </div>
-    <div 
-      v-if="!loading" 
+    <div
+      v-if="!loading"
       class="page-view__text-wrapper"/>
 
-    <div 
-      v-if="loading" 
+    <div
+      v-if="loading"
       class="page-view__loading fa-2x">
       <i class="fas fa-spinner fa-pulse"/>
     </div>
@@ -22,6 +22,9 @@
 </template>
 
 <script>
+import eventBus from '@/event_bus';
+import { TextLayerBuilder } from 'pdfjs-dist/lib/web/text_layer_builder.js';
+
 export default {
   name: 'Page',
   inject: ['pdfViewer'],
@@ -35,6 +38,7 @@ export default {
     return {
       loading: true,
       viewport: null,
+      pdfPage: null,
     };
   },
   computed: {
@@ -60,28 +64,49 @@ export default {
   created() {
     this.initPage();
   },
+  mounted() {
+    eventBus.$on('textlayerrendered', this.onTextLayerRendered);
+  },
+  beforeDestroy() {
+    eventBus.$off('textlayerrendered');
+  },
   methods: {
     async initPage() {
-      let page = await this.pdfViewer.loadPage(this.pageNumber);
+      this.pdfPage = await this.pdfViewer.loadPage(this.pageNumber);
       this.loading = false;
       await this.$nextTick();
-      let viewport = page.getViewport(this.pdfViewer.options.scale);
+      let viewport = this.pdfPage.getViewport(this.pdfViewer.options.scale);
       this.viewport = viewport;
-      let canvas = this.$el.querySelector(`#${this.canvasId}`);
-      let context = canvas.getContext('2d');
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
 
-      // Render PDF page into canvas context
-      let renderContext = {
-        canvasContext: context,
+      let textLayer = new TextLayerBuilder({
+        textLayerDiv: this.$el.querySelector('.page-view__text-wrapper'),
+        eventBus: eventBus,
+        pageIndex: this.pageNumber - 1,
         viewport: viewport,
-      };
-      let renderTask = page.render(renderContext);
-      renderTask.then(() => {
-        console.log(`Page ${this.pageNumber} rendered...`);
       });
-      return page;
+
+      await this.paintOnCanvas();
+      const readableStream = this.pdfPage.streamTextContent({
+        normalizeWhitespace: true,
+      });
+      textLayer.setTextContentStream(readableStream);
+      await textLayer.render();
+    },
+    paintOnCanvas() {
+      let canvas = this.$el.querySelector(`#${this.canvasId}`);
+      canvas.id = `${this.pageNumber}`;
+      const ctx = canvas.getContext('2d', { alpha: false });
+      canvas.height = this.viewport.height;
+      canvas.width = this.viewport.width;
+
+      const renderTask = this.pdfPage.render({
+        canvasContext: ctx,
+        viewport: this.viewport,
+      });
+      return renderTask.promise;
+    },
+    onTextLayerRendered() {
+      console.log('onTextLayerRendered');
     },
   },
 };
@@ -91,6 +116,7 @@ export default {
 $loading-icon-radius-length: 16px;
 
 .page-view {
+  direction: ltr;
   position: relative;
   border: 9px solid transparent;
   border-image: url('../assets/shadow.png') 9 9 repeat;
@@ -98,6 +124,58 @@ $loading-icon-radius-length: 16px;
   background-color: white;
   margin: 1px auto -8px auto;
   overflow: visible;
+  width: 816px;
+  height: 1056px;
+}
+
+.page-view__canvas-wrapper {
+  position: relative;
+  overflow: hidden;
+
+  /deep/ canvas {
+    margin: 0;
+    display: block;
+  }
+}
+
+.page-view__text-wrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  opacity: 0.2;
+
+  /deep/ &::selection {
+    background: rgb(0, 0, 255);
+  }
+
+  /deep/ & > div {
+    position: absolute;
+    color: transparent;
+    white-space: pre;
+    cursor: text;
+    transform-origin: 0 0;
+  }
+
+  .endOfContent {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    cursor: default;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+  }
+
+  .endOfContent.active {
+    top: 0;
+  }
 }
 
 .page-view__loading {
