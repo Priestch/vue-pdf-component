@@ -5,31 +5,31 @@
 </template>
 
 <script>
-import PDF from "./PDFViewer";
-import pdfData from "../demo_data";
+import PDF from './PDFViewer';
+import pdfData from '../demo_data';
 
 export default {
-  name: "PDFApplication",
+  name: 'PDFApplication',
   components: {
-    pdf: PDF
+    pdf: PDF,
   },
   props: {
     config: {
       type: Object,
-      required: false
-    }
+      required: false,
+    },
   },
   data() {
     return {
       defaultConfig: {},
-      pdfData: atob(pdfData)
+      pdfData: atob(pdfData),
     };
   },
   created() {
     if (this.config) {
       Object.assign(this.defaultConfig, this.config);
     }
-  }
+  },
 };
 </script>
 

@@ -5,13 +5,13 @@
 </template>
 
 <script>
-import PDFApplication from "./components/PDFApplication";
+import PDFApplication from './components/PDFApplication';
 
 export default {
-  name: "app",
+  name: 'app',
   components: {
-    pdfApplication: PDFApplication
-  }
+    pdfApplication: PDFApplication,
+  },
 };
 </script>
 

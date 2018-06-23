@@ -1,14 +1,14 @@
 module.exports = {
-  assetsDir: "static",
+  assetsDir: 'static',
 
   configureWebpack: {
     entry: {
-      "pdf.worker": ["pdfjs-dist/build/pdf.worker.entry"]
-    }
+      'pdf.worker': ['pdfjs-dist/build/pdf.worker.entry'],
+    },
   },
 
   pluginOptions: {
     lintStyleOnBuild: true,
-    stylelint: {}
-  }
+    stylelint: {},
+  },
 };

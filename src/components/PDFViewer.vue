@@ -5,37 +5,37 @@
 </template>
 
 <script>
-import PDFPage from "./Page";
-import { getVisibleElements, CSS_UNITS } from "../ui_utils";
+import PDFPage from './Page';
+import { getVisibleElements, CSS_UNITS } from '../ui_utils';
 // import { PDFPageView } from '../pdf_page_view';
 
-const pdfjsLib = require("pdfjs-dist");
-if (process.env.NODE_ENV === "production") {
+const pdfjsLib = require('pdfjs-dist');
+if (process.env.NODE_ENV === 'production') {
   // TODO, replace with dynamic hash
 } else {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.js";
+  pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
 }
 
 export default {
-  name: "PDFViewer",
+  name: 'PDFViewer',
   components: {
-    "pdf-page": PDFPage
+    'pdf-page': PDFPage,
   },
   props: {
     pdfData: {
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       pdfDocument: null,
       options: {
-        scale: 2
+        scale: 2,
       },
       pages: [],
       currentPageNumber: 1,
       defaultViewport: null,
-      pagesCount_: 0
+      pagesCount_: 0,
     };
   },
   async created() {
@@ -44,13 +44,13 @@ export default {
   mounted() {},
   provide() {
     return {
-      pdfViewer: this
+      pdfViewer: this,
     };
   },
   computed: {
     pagesCount() {
       return this.pages.length;
-    }
+    },
   },
   watch: {
     pdfData() {
@@ -58,7 +58,7 @@ export default {
         this._cancelRendering();
         this._resetView();
       }
-    }
+    },
   },
   methods: {
     async initPDFDocument() {
@@ -70,7 +70,7 @@ export default {
     async initPages() {
       let pagesCount = this.pdfDocument.numPages;
       let firstPage = await this.pdfDocument.getPage(1);
-      console.log("initPages", firstPage, this.pagesCount);
+      console.log('initPages', firstPage, this.pagesCount);
       let scale = this.currentScale;
       this.defaultViewport = firstPage.getViewport(scale * CSS_UNITS);
       for (let pageNum = 1; pageNum <= pagesCount; ++pageNum) {
@@ -110,7 +110,7 @@ export default {
         right: true,
         down: true,
         lastX: this.$el.scrollLeft,
-        lastY: this.$el.scrollTop
+        lastY: this.$el.scrollTop,
         // _eventHandler: debounceScroll
       };
 
@@ -138,7 +138,7 @@ export default {
       });
     },
     _scrollUpdate() {
-      console.log("_scrollUpdate", this.pagesCount);
+      console.log('_scrollUpdate', this.pagesCount);
       if (this.pagesCount === 0) {
         return;
       }
@@ -167,7 +167,7 @@ export default {
       }
     },
     _getVisiblePages() {
-      console.log("_getVisiblePages");
+      console.log('_getVisiblePages');
       // if (!this.isInPresentationMode) {
       let isInPresentationMode = false;
       if (!isInPresentationMode) {
@@ -175,7 +175,7 @@ export default {
           this.$el,
           this.pages,
           true,
-          false
+          false,
           // this.scrollMode === ScrollMode.HORIZONTAL
         );
       }
@@ -186,7 +186,7 @@ export default {
       console.log(currentPage, {
         first: currentPage,
         last: currentPage,
-        views: visible
+        views: visible,
       });
       return { first: currentPage, last: currentPage, views: visible };
     },
@@ -230,8 +230,8 @@ export default {
       //   source: this,
       //   location: this._location
       // });
-    }
-  }
+    },
+  },
 };
 </script>
 

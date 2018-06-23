@@ -14,18 +14,18 @@
 
 <script>
 export default {
-  name: "Page",
-  inject: ["pdfViewer"],
+  name: 'Page',
+  inject: ['pdfViewer'],
   props: {
     pageNumber: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       loading: true,
-      viewport: null
+      viewport: null,
     };
   },
   created() {
@@ -47,9 +47,9 @@ export default {
       }
       return {
         width: `${this.width}px`,
-        height: `${this.height}px`
+        height: `${this.height}px`,
       };
-    }
+    },
   },
   methods: {
     async initPage() {
@@ -59,22 +59,22 @@ export default {
       let viewport = page.getViewport(this.pdfViewer.options.scale);
       this.viewport = viewport;
       let canvas = this.$el.querySelector(`#${this.canvasId}`);
-      let context = canvas.getContext("2d");
+      let context = canvas.getContext('2d');
       canvas.height = viewport.height;
       canvas.width = viewport.width;
 
       // Render PDF page into canvas context
       let renderContext = {
         canvasContext: context,
-        viewport: viewport
+        viewport: viewport,
       };
       let renderTask = page.render(renderContext);
       renderTask.then(() => {
         console.log(`Page ${this.pageNumber} rendered...`);
       });
       return page;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -84,7 +84,7 @@ $loading-icon-radius-length: 16px;
 .page-view {
   position: relative;
   border: 9px solid transparent;
-  border-image: url("../assets/shadow.png") 9 9 repeat;
+  border-image: url('../assets/shadow.png') 9 9 repeat;
   background-clip: content-box;
   background-color: white;
   margin: 1px auto -8px auto;
