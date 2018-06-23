@@ -251,9 +251,7 @@ export const getVisibleElements = function(
     hiddenWidth =
       Math.max(0, left - currentWidth) + Math.max(0, viewRight - right);
     percentVisible =
-      ((viewHeight - hiddenHeight) *
-        (viewWidth - hiddenWidth) *
-        100 /
+      (((viewHeight - hiddenHeight) * (viewWidth - hiddenWidth) * 100) /
         viewHeight /
         viewWidth) |
       0;

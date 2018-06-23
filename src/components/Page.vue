@@ -6,7 +6,9 @@
     <div class="page-view__text-wrapper" v-if="!loading">
     </div>
 
-    <div class="page-view__loading-icon" v-if="loading"></div>
+    <div class="page-view__loading fa-2x" v-if="loading">
+      <i class="fas fa-spinner fa-pulse"></i>
+    </div>
   </div>
 </template>
 
@@ -77,6 +79,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+$loading-icon-radius-length: 16px;
+
 .page-view {
   position: relative;
   border: 9px solid transparent;
@@ -87,12 +91,9 @@ export default {
   overflow: visible;
 }
 
-.page-view__loading-icon {
+.page-view__loading {
   position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background: url("../assets/loading-icon.gif") center no-repeat;
+  top: calc(50% - #{$loading-icon-radius-length});
+  left: calc(50% - #{$loading-icon-radius-length});
 }
 </style>
