@@ -72,7 +72,9 @@ export default {
     },
   },
   created() {
-    this.renderPage();
+    if (this.visibility) {
+      this.renderPage();
+    }
   },
   mounted() {
     eventBus.$on('textlayerrendered', this.onTextLayerRendered);
