@@ -1,21 +1,32 @@
 <template>
   <div id="app">
-    <pdf-application/>
+    <pdf :pdf-data="pdfData" />
   </div>
 </template>
 
 <script>
-import PDFApplication from './components/PDFApplication';
+import PDF from '@/components/PDFViewer';
+import pdfData from './demo_data';
 
 export default {
   name: 'App',
   components: {
-    pdfApplication: PDFApplication,
+    pdf: PDF,
+  },
+  data() {
+    return {
+      pdfData: atob(pdfData),
+    };
   },
 };
 </script>
 
 <style lang="scss">
+html,
+body {
+  height: 100%;
+}
+
 body {
   margin: 0;
 }

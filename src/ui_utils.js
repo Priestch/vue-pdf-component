@@ -165,14 +165,14 @@ export const getVisibleElements = function(
   // offsetLeft/Top (which includes margin) and adding clientLeft/Top (which is
   // the border). Adding clientWidth/Height gets us the bottom-right corner of
   // the padding edge.
-  function isElementBottomAfterViewTop() {
-    let element = scrollEl.querySelector(".pdf-document__page");
+  function isElementBottomAfterViewTop(view) {
+    let element = view.div;
     let elementBottom =
       element.offsetTop + element.clientTop + element.clientHeight;
     return elementBottom > top;
   }
-  function isElementRightAfterViewLeft() {
-    let element = scrollEl.querySelector(".pdf-document__page");
+  function isElementRightAfterViewLeft(view) {
+    let element = view.div;
     let elementRight =
       element.offsetLeft + element.clientLeft + element.clientWidth;
     return elementRight > left;
@@ -217,7 +217,7 @@ export const getVisibleElements = function(
 
   for (let i = firstVisibleElementInd, ii = views.length; i < ii; i++) {
     view = views[i];
-    element = scrollEl.querySelector(".pdf-document__page");
+    element = view.div;
     currentWidth = element.offsetLeft + element.clientLeft;
     currentHeight = element.offsetTop + element.clientTop;
     viewWidth = element.clientWidth;

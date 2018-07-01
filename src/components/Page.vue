@@ -11,6 +11,7 @@
     </div>
     <div
       v-if="!loading"
+      ref="textLayer"
       class="page-view__text-wrapper"/>
 
     <div
@@ -31,6 +32,10 @@ export default {
   props: {
     pageNumber: {
       type: Number,
+      required: true,
+    },
+    visibility: {
+      type: Boolean,
       required: true,
     },
   },
@@ -61,8 +66,13 @@ export default {
       };
     },
   },
+  watch: {
+    visibility() {
+      this.visibilityChangeHandler();
+    },
+  },
   created() {
-    this.initPage();
+    this.renderPage();
   },
   mounted() {
     eventBus.$on('textlayerrendered', this.onTextLayerRendered);
@@ -71,7 +81,8 @@ export default {
     eventBus.$off('textlayerrendered');
   },
   methods: {
-    async initPage() {
+    async renderPage() {
+      this.loading = true;
       this.pdfPage = await this.pdfViewer.loadPage(this.pageNumber);
       this.loading = false;
       await this.$nextTick();
@@ -92,6 +103,13 @@ export default {
       textLayer.setTextContentStream(readableStream);
       await textLayer.render();
     },
+    visibilityChangeHandler() {
+      if (this.visibility) {
+        this.renderPage();
+      } else {
+        this.reset();
+      }
+    },
     paintOnCanvas() {
       let canvas = this.$el.querySelector(`#${this.canvasId}`);
       canvas.id = `${this.pageNumber}`;
@@ -107,6 +125,23 @@ export default {
     },
     onTextLayerRendered() {
       console.log('onTextLayerRendered');
+    },
+    clearTextLayer() {
+      while (this.$refs.textLayer.lastChild) {
+        this.$refs.textLayer.removeChild(this.$refs.textLayer.lastChild);
+      }
+    },
+    clearCanvasLayer() {
+      const canvas = this.$el.querySelector(`#${this.canvasId}`);
+      if (canvas) {
+        let context = canvas.getContext('2d');
+        context.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    },
+    reset() {
+      this.clearTextLayer();
+      this.clearCanvasLayer();
+      this.loading = true;
     },
   },
 };
@@ -168,9 +203,7 @@ $loading-icon-radius-length: 16px;
     bottom: 0;
     z-index: -1;
     cursor: default;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    -moz-user-select: none;
+    user-select: none;
   }
 
   .endOfContent.active {

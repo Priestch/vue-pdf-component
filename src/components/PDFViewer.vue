@@ -1,12 +1,17 @@
 <template>
   <div
-    v-if="pdfDocument"
-    class="viewer"
-    @scroll="onScroll()">
-    <pdf-page
-      v-for="page in pdfDocument.numPages"
-      :key="page"
-      :page-number="page"/>
+    class="pdf-application"
+    @scroll="onScroll">
+    <div
+      v-if="pdfDocument"
+      class="viewer">
+      <pdf-page
+        v-for="page in pages"
+        ref="pdfPage"
+        :visibility="isPageVisible(page.id)"
+        :key="page.id"
+        :page-number="page.id"/>
+    </div>
   </div>
 </template>
 
@@ -43,6 +48,11 @@ export default {
       currentPageNumber: 1,
       defaultViewport: null,
       pagesCount_: 0,
+      visiblePages: {
+        first: { id: 1 },
+        last: { id: 1 },
+        views: [],
+      },
     };
   },
   computed: {
@@ -70,44 +80,28 @@ export default {
   methods: {
     async initPDFDocument() {
       this.pdfDocument = await this.loadPDFDocument();
-      // _pageViewsReady
-      // emit event 'pagesloaded'
-      // this.initPages();
+      await this.initPages();
     },
     async initPages() {
       let pagesCount = this.pdfDocument.numPages;
       let firstPage = await this.pdfDocument.getPage(1);
-      console.log('initPages', firstPage, this.pagesCount);
       let scale = this.currentScale;
       this.defaultViewport = firstPage.getViewport(scale * CSS_UNITS);
       for (let pageNum = 1; pageNum <= pagesCount; ++pageNum) {
-        // let textLayerFactory = null;
-        // if (this.textLayerMode !== TextLayerMode.DISABLE) {
-        //   textLayerFactory = this;
-        // }
-        // let pageView = new PDFPageView({
-        //   container: this.$el.firstElementChild,
-        //   eventBus: this.eventBus,
-        //   id: pageNum,
-        //   scale,
-        //   renderingQueue: this.renderingQueue,
-        //   textLayerFactory,
-        //   textLayerMode: this.textLayerMode,
-        //   annotationLayerFactory: this,
-        //   imageResourcesPath: this.imageResourcesPath,
-        //   renderInteractiveForms: this.renderInteractiveForms,
-        //   renderer: this.renderer,
-        //   enableWebGL: this.enableWebGL,
-        //   useOnlyCssZoom: this.useOnlyCssZoom,
-        //   maxCanvasPixels: this.maxCanvasPixels,
-        //   l10n: this.l10n
-        // });
-        // bindOnAfterAndBeforeDraw(pageView);
-        this.pages.push(pageNum);
+        const page = {
+          id: pageNum,
+        };
+        this.pages.push(page);
       }
     },
     loadPDFDocument() {
       return pdfjsLib.getDocument({ data: this.pdfData });
+    },
+    isPageVisible(page) {
+      return (
+        this.visiblePages.first.id <= page &&
+        page <= this.visiblePages.last.id + 1
+      );
     },
     loadPage(pageNumber) {
       return this.pdfDocument.getPage(pageNumber);
@@ -118,7 +112,6 @@ export default {
         down: true,
         lastX: this.$el.scrollLeft,
         lastY: this.$el.scrollTop,
-        // _eventHandler: debounceScroll
       };
 
       let rAF = null;
@@ -145,7 +138,6 @@ export default {
       });
     },
     _scrollUpdate() {
-      console.log('_scrollUpdate', this.pagesCount);
       if (this.pagesCount === 0) {
         return;
       }
@@ -174,32 +166,24 @@ export default {
       }
     },
     _getVisiblePages() {
-      console.log('_getVisiblePages');
-      // if (!this.isInPresentationMode) {
       let isInPresentationMode = false;
+      const pageElements = this.$refs.pdfPage.map((c, index) => {
+        return {
+          id: index + 1,
+          div: c.$el,
+        };
+      });
       if (!isInPresentationMode) {
-        return getVisibleElements(
-          this.$el,
-          this.pages,
-          true,
-          false,
-          // this.scrollMode === ScrollMode.HORIZONTAL
-        );
+        return getVisibleElements(this.$el, pageElements);
       }
       // The algorithm in getVisibleElements doesn't work in all browsers and
       // configurations when presentation mode is active.
       let currentPage = this.pages[this.currentPageNumber - 1];
       let visible = [{ id: currentPage.id, view: currentPage }];
-      console.log(currentPage, {
-        first: currentPage,
-        last: currentPage,
-        views: visible,
-      });
       return { first: currentPage, last: currentPage, views: visible };
     },
     update() {
-      let visible = this._getVisiblePages();
-      console.log(visible);
+      this.visiblePages = this._getVisiblePages();
       // let visiblePages = visible.views,
       //   numVisiblePages = visiblePages.length;
       //
@@ -243,4 +227,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.pdf-application {
+  background: #404040;
+  overflow: auto;
+}
 </style>
