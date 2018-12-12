@@ -6,7 +6,6 @@
 
 <script>
 import PDF from '@/components/PDFViewer';
-import pdfData from './demo_data';
 
 export default {
   name: 'App',
@@ -15,7 +14,7 @@ export default {
   },
   data() {
     return {
-      pdfData: atob(pdfData),
+      pdfData: '/static/compressed.tracemonkey-pldi-09.pdf',
     };
   },
 };

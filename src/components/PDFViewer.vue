@@ -95,7 +95,7 @@ export default {
       }
     },
     loadPDFDocument() {
-      return pdfjsLib.getDocument({ data: this.pdfData });
+      return pdfjsLib.getDocument(this.pdfData);
     },
     isPageVisible(page) {
       return (
