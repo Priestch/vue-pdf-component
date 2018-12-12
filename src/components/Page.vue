@@ -17,7 +17,9 @@
     <div
       v-if="loading"
       class="page-view__loading fa-2x">
-      <i class="fas fa-spinner fa-pulse"/>
+      <font-awesome-icon
+        :icon="['fas', 'spinner']"
+        pulse/>
     </div>
   </div>
 </template>
