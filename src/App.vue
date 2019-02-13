@@ -35,4 +35,8 @@ body {
   width: 80%;
   margin: 0 auto;
 }
+
+::selection {
+  background: rgba(0, 0, 255, 0.3);
+}
 </style>

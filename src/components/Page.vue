@@ -186,11 +186,11 @@ $loading-icon-radius-length: 16px;
   overflow: hidden;
   opacity: 0.2;
 
-  /deep/ &::selection {
+  /deep/ ::selection {
     background: rgb(0, 0, 255);
   }
 
-  /deep/ & > div {
+  /deep/ > div {
     position: absolute;
     color: transparent;
     white-space: pre;
