@@ -18,6 +18,7 @@
 <script>
 import PDFPage from './Page';
 import { getVisibleElements, CSS_UNITS } from '../ui_utils';
+import createEventBus from '../event_bus_factory';
 // import { PDFPageView } from '../pdf_page_view';
 
 const pdfjsLib = require('pdfjs-dist');
@@ -53,6 +54,7 @@ export default {
         last: { id: 1 },
         views: [],
       },
+      eventBus: createEventBus(),
     };
   },
   computed: {

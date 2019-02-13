@@ -25,8 +25,7 @@
 </template>
 
 <script>
-import eventBus from '@/event_bus';
-import { TextLayerBuilder } from 'pdfjs-dist/lib/web/text_layer_builder.js';
+import { TextLayerBuilder } from 'pdfjs-dist/web/pdf_viewer';
 
 export default {
   name: 'Page',
@@ -79,10 +78,10 @@ export default {
     }
   },
   mounted() {
-    eventBus.$on('textlayerrendered', this.onTextLayerRendered);
+    this.pdfViewer.eventBus.on('textlayerrendered', this.onTextLayerRendered);
   },
   beforeDestroy() {
-    eventBus.$off('textlayerrendered');
+    this.pdfViewer.eventBus.off('textlayerrendered');
   },
   methods: {
     async renderPage() {
@@ -95,7 +94,7 @@ export default {
 
       let textLayer = new TextLayerBuilder({
         textLayerDiv: this.$el.querySelector('.page-view__text-wrapper'),
-        eventBus: eventBus,
+        eventBus: this.pdfViewer.eventBus,
         pageIndex: this.pageNumber - 1,
         viewport: viewport,
       });
