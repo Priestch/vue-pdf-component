@@ -78,10 +78,13 @@ export default {
     }
   },
   mounted() {
-    this.pdfViewer.eventBus.on('textlayerrendered', this.onTextLayerRendered);
+    this.pdfViewer.app.eventBus.on(
+      'textlayerrendered',
+      this.onTextLayerRendered,
+    );
   },
   beforeDestroy() {
-    this.pdfViewer.eventBus.off('textlayerrendered');
+    this.pdfViewer.app.eventBus.off('textlayerrendered');
   },
   methods: {
     async renderPage() {
@@ -94,7 +97,7 @@ export default {
 
       let textLayer = new TextLayerBuilder({
         textLayerDiv: this.$el.querySelector('.page-view__text-wrapper'),
-        eventBus: this.pdfViewer.eventBus,
+        eventBus: this.pdfViewer.app.eventBus,
         pageIndex: this.pageNumber - 1,
         viewport: viewport,
       });
@@ -126,8 +129,10 @@ export default {
       });
       return renderTask.promise;
     },
-    onTextLayerRendered() {
-      console.log('onTextLayerRendered');
+    onTextLayerRendered(event) {
+      if (event.pageNumber === this.pageNumber) {
+        console.log('onTextLayerRendered', event);
+      }
     },
     clearTextLayer() {
       while (this.$refs.textLayer.lastChild) {
