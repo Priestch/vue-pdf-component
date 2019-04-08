@@ -47,17 +47,16 @@ export default {
       currentPageNumber: 1,
       defaultViewport: null,
       pagesCount_: 0,
-      visiblePages: {
-        first: { id: 1 },
-        last: { id: 1 },
-        views: [],
-      },
       app: null,
     };
   },
   computed: {
     pagesCount() {
       return this.pages.length;
+    },
+    // TODO, this.app.visiblePages work?
+    visiblePages() {
+      return this.app.visiblePages;
     },
   },
   watch: {

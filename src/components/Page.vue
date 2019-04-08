@@ -92,10 +92,10 @@ export default {
       this.pdfPage = await this.pdfViewer.loadPage(this.pageNumber);
       this.loading = false;
       await this.$nextTick();
-      let viewport = this.pdfPage.getViewport(this.pdfViewer.options.scale);
+      const viewport = this.pdfPage.getViewport(this.pdfViewer.options.scale);
       this.viewport = viewport;
 
-      let textLayer = new TextLayerBuilder({
+      const textLayer = new TextLayerBuilder({
         textLayerDiv: this.$el.querySelector('.page-view__text-wrapper'),
         eventBus: this.pdfViewer.app.eventBus,
         pageIndex: this.pageNumber - 1,
@@ -117,7 +117,7 @@ export default {
       }
     },
     paintOnCanvas() {
-      let canvas = this.$el.querySelector(`#${this.canvasId}`);
+      const canvas = this.$el.querySelector(`#${this.canvasId}`);
       canvas.id = `${this.pageNumber}`;
       const ctx = canvas.getContext('2d', { alpha: false });
       canvas.height = this.viewport.height;
@@ -142,7 +142,7 @@ export default {
     clearCanvasLayer() {
       const canvas = this.$el.querySelector(`#${this.canvasId}`);
       if (canvas) {
-        let context = canvas.getContext('2d');
+        const context = canvas.getContext('2d');
         context.clearRect(0, 0, canvas.width, canvas.height);
       }
     },

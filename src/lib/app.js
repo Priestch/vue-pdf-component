@@ -4,7 +4,7 @@ import {
   DEFAULT_SCALE,
   CSS_UNITS,
   getVisibleElements,
-} from 'pdfjs-dist/web/pdf_viewer';
+} from './ui_utils';
 
 const pdfjsLib = require('pdfjs-dist');
 
@@ -31,9 +31,10 @@ class PDFApplication {
   }
 
   async initPages() {
-    let pagesCount = this.pdfDocument.numPages;
-    let firstPage = await this.pdfDocument.getPage(1);
-    let scale = this.currentScale;
+    const pagesCount = this.pdfDocument.numPages;
+    this.pagesCount = pagesCount;
+    const firstPage = await this.pdfDocument.getPage(1);
+    const scale = this.currentScale;
     this._defaultViewport = firstPage.getViewport(scale * CSS_UNITS);
     for (let pageNum = 1; pageNum <= pagesCount; ++pageNum) {
       const page = {
@@ -51,12 +52,12 @@ class PDFApplication {
     }
   }
 
-  handleScroll($el) {
-    let state = {
+  handleScroll(el) {
+    const state = {
       right: true,
       down: true,
-      lastX: $el.scrollLeft,
-      lastY: $el.scrollTop,
+      lastX: el.scrollLeft,
+      lastY: el.scrollTop,
     };
 
     let rAF = null;
@@ -67,14 +68,14 @@ class PDFApplication {
     rAF = window.requestAnimationFrame(() => {
       rAF = null;
 
-      let currentX = $el.scrollLeft;
-      let lastX = state.lastX;
+      const currentX = el.scrollLeft;
+      const lastX = state.lastX;
       if (currentX !== lastX) {
         state.right = currentX > lastX;
       }
       state.lastX = currentX;
-      let currentY = $el.scrollTop;
-      let lastY = state.lastY;
+      const currentY = el.scrollTop;
+      const lastY = state.lastY;
       if (currentY !== lastY) {
         state.down = currentY > lastY;
       }
@@ -84,7 +85,7 @@ class PDFApplication {
   }
 
   _getVisiblePages() {
-    let isInPresentationMode = false;
+    const isInPresentationMode = false;
     const pageViews = this.rootContainer.querySelectorAll('.page-view');
     const pageElements = Array.from(pageViews).map((c, index) => {
       return {
@@ -97,8 +98,8 @@ class PDFApplication {
     }
     // The algorithm in getVisibleElements doesn't work in all browsers and
     // configurations when presentation mode is active.
-    let currentPage = this.pages[this.currentPageNumber - 1];
-    let visible = [{ id: currentPage.id, view: currentPage }];
+    const currentPage = this.pages[this.currentPageNumber - 1];
+    const visible = [{ id: currentPage.id, view: currentPage }];
     return { first: currentPage, last: currentPage, views: visible };
   }
 
