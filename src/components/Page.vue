@@ -194,7 +194,7 @@ $loading-icon-radius-length: 16px;
     background: rgb(0, 0, 255);
   }
 
-  ::v-deep > div {
+  ::v-deep > span {
     position: absolute;
     color: transparent;
     white-space: pre;
