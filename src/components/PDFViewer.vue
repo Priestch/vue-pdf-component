@@ -1,11 +1,11 @@
 <template>
   <div
-    class="pdf-application"
+    class="pdf-viewer"
     @scroll="onScroll">
     <div
       v-if="app && app.pdfDocument"
-      class="viewer">
-      <pdf-page
+      class="page-viewer-container">
+      <page
         v-for="page in app.pages"
         ref="pdfPage"
         :visibility="isPageVisible(page.id)"
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import PDFPage from './Page';
+import Page from './Page';
 import { PDFApplication } from '../lib/app';
 
 const pdfjsLib = require('pdfjs-dist');
@@ -29,7 +29,7 @@ if (process.env.NODE_ENV === 'production') {
 export default {
   name: 'PDFViewer',
   components: {
-    'pdf-page': PDFPage,
+    Page,
   },
   props: {
     pdfData: {
@@ -95,7 +95,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.pdf-application {
+.pdf-viewer {
   background: #404040;
   overflow: auto;
 }
