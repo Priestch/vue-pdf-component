@@ -7,6 +7,7 @@ module.exports = {
     loaderOptions: {
       sass: {
         data: `@import "@/assets/variables.scss";`,
+        implementation: require('sass'),
       },
     },
   },

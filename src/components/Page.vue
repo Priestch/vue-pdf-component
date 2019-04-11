@@ -175,7 +175,7 @@ $loading-icon-radius-length: 16px;
   position: relative;
   overflow: hidden;
 
-  /deep/ canvas {
+  ::v-deep canvas {
     margin: 0;
     display: block;
   }
@@ -190,11 +190,11 @@ $loading-icon-radius-length: 16px;
   overflow: hidden;
   opacity: 0.2;
 
-  /deep/ ::selection {
+  ::v-deep ::selection {
     background: rgb(0, 0, 255);
   }
 
-  /deep/ > div {
+  ::v-deep > div {
     position: absolute;
     color: transparent;
     white-space: pre;
