@@ -10,7 +10,7 @@
         ref="pdfPage"
         :visibility="isPageVisible(page.id)"
         :key="page.id"
-        :page-number="page.id"/>
+        :page-number="page.id"></page>
     </div>
   </div>
 </template>

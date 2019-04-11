@@ -7,19 +7,19 @@
       v-if="!loading"
       :style="viewportStyle"
       class="page-view__canvas-wrapper">
-      <canvas :id="canvasId"/>
+      <canvas :id="canvasId"></canvas>
     </div>
     <div
       v-if="!loading"
       ref="textLayer"
-      class="page-view__text-wrapper"/>
+      class="page-view__text-wrapper"></div>
 
     <div
       v-if="loading"
       class="page-view__loading fa-2x">
       <font-awesome-icon
         :icon="['fas', 'spinner']"
-        pulse/>
+        pulse></font-awesome-icon>
     </div>
   </div>
 </template>

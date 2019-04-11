@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <pdf-viewer :pdf-data="pdfData" />
+    <pdf-viewer :pdf-data="pdfData" ></pdf-viewer>
   </div>
 </template>
 
