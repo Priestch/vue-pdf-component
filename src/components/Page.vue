@@ -1,21 +1,27 @@
 <template>
   <div
     :data-page-number="pageNumber"
+    :data-loaded="layersLoaded"
     :style="viewportStyle"
     class="page-view">
     <div
-      v-if="!loading"
-      :style="viewportStyle"
+      v-if="!isLoading"
+      ref="canvasLayer"
+      :style="canvasWrapperStyle"
       class="page-view__canvas-wrapper">
-      <canvas :id="canvasId"></canvas>
+      <canvas
+        ref="canvas"
+        :id="canvasId"
+        :hidden="!canvasVisible"
+        :style="canvasStyle"></canvas>
     </div>
     <div
-      v-if="!loading"
+      v-if="!isLoading"
       ref="textLayer"
       class="page-view__text-wrapper"></div>
 
     <div
-      v-if="loading"
+      v-if="isLoading"
       class="page-view__loading fa-2x">
       <font-awesome-icon
         :icon="['fas', 'spinner']"
@@ -25,7 +31,8 @@
 </template>
 
 <script>
-import { TextLayerBuilder } from 'pdfjs-dist/web/pdf_viewer';
+import { PDFPageView } from '../lib/pdfjs/pdf_page_view';
+import { TextLayerMode } from '../lib/pdfjs/ui_utils';
 
 export default {
   name: 'Page',
@@ -42,29 +49,28 @@ export default {
   },
   data() {
     return {
-      loading: true,
+      isLoading: true,
       viewport: null,
       pdfPage: null,
+      pageView: null,
+      viewportStyle: {},
+      canvasWrapperStyle: {},
+      canvasStyle: {},
+      showCanvasLayer: false,
+      showTextLayer: false,
+      canvasVisible: false,
+      layersLoaded: false,
     };
   },
   computed: {
     canvasId() {
       return `page${this.pageNumber}`;
     },
-    width() {
-      return this.viewport.width;
+    dataLoaded() {
+      return !this.isLoading && this.showCanvasLayer && this.showTextLayer;
     },
-    height() {
-      return this.viewport.height;
-    },
-    viewportStyle() {
-      if (!this.viewport) {
-        return {};
-      }
-      return {
-        width: `${this.width}px`,
-        height: `${this.height}px`,
-      };
+    app() {
+      return this.pdfViewer.app;
     },
   },
   watch: {
@@ -73,45 +79,59 @@ export default {
     },
   },
   created() {
-    if (this.visibility) {
-      this.renderPage();
-    }
+    const pageOptions = {
+      id: this.pageNumber,
+      defaultViewport: this.app.defaultViewport.clone(),
+      textLayerMode: TextLayerMode.ENABLE,
+      scale: this.app.currentScale,
+      container: this.$parent.$el.querySelector('.page-viewer-container'),
+      eventBus: this.app.eventBus,
+      textLayerFactory: this.app,
+    };
+    this.pageView = new PDFPageView(pageOptions);
   },
   mounted() {
-    this.pdfViewer.app.eventBus.on(
-      'textlayerrendered',
-      this.onTextLayerRendered,
-    );
+    if (this.visibility) {
+      this.drawPage();
+    }
+    this.app.eventBus.on('pagerendered', this.onPageRendered);
   },
   beforeDestroy() {
-    this.pdfViewer.app.eventBus.off('textlayerrendered');
+    this.app.eventBus.off('textlayerrendered');
   },
   methods: {
-    async renderPage() {
-      this.loading = true;
-      this.pdfPage = await this.pdfViewer.loadPage(this.pageNumber);
-      this.loading = false;
-      await this.$nextTick();
-      const viewport = this.pdfPage.getViewport(this.pdfViewer.options.scale);
-      this.viewport = viewport;
+    async getPage() {
+      return await this.app.pdfDocument.getPage(this.pageNumber);
+    },
 
-      const textLayer = new TextLayerBuilder({
-        textLayerDiv: this.$el.querySelector('.page-view__text-wrapper'),
-        eventBus: this.pdfViewer.app.eventBus,
-        pageIndex: this.pageNumber - 1,
-        viewport: viewport,
-      });
+    getTextLayer() {
+      return this.$refs.textLayer;
+    },
 
-      await this.paintOnCanvas();
-      const readableStream = this.pdfPage.streamTextContent({
-        normalizeWhitespace: true,
-      });
-      textLayer.setTextContentStream(readableStream);
-      await textLayer.render();
+    getCanvasLayer() {
+      return this.$refs.canvasLayer;
+    },
+
+    getCanvas() {
+      return this.$refs.canvas;
+    },
+
+    showCanvas() {
+      this.canvasVisible = true;
+    },
+
+    async drawPage() {
+      this.isLoading = true;
+      this.pageView.setPageComponent(this);
+      const pdfPage = await this.getPage(this.pageNumber);
+      this.pageView.setPdfPage(pdfPage);
+
+      this.pageView.draw();
+      this.isLoading = false;
     },
     visibilityChangeHandler() {
       if (this.visibility) {
-        this.renderPage();
+        this.drawPage();
       } else {
         this.reset();
       }
@@ -129,10 +149,42 @@ export default {
       });
       return renderTask.promise;
     },
-    onTextLayerRendered(event) {
+    onPageRendered(event) {
       if (event.pageNumber === this.pageNumber) {
-        console.log('onTextLayerRendered', event);
+        console.log('onPageRendered', event);
       }
+    },
+    resetStyle() {
+      this.viewportStyle = {
+        width: `${this.pageView.width}px`,
+        height: `${this.pageView.height}px`,
+      };
+    },
+    async renderCanvasLayer() {
+      this.showCanvasLayer = true;
+      this.updateCanvasWrapperStyle();
+      await this.$nextTick();
+    },
+    async renderTextLayer() {
+      this.showTextLayer = true;
+      await this.$nextTick();
+    },
+    updateCanvasWrapperStyle() {
+      this.canvasWrapperStyle = {
+        width: this.$el.width,
+        height: this.$el.height,
+      };
+    },
+    setLayersLoaded(loaded) {
+      this.layersLoaded = loaded;
+    },
+    updateCanvasStyle({ width, height }) {
+      this.$refs.canvas.style.width = width;
+      this.$refs.canvas.style.height = height;
+    },
+    updateCanvasRect(width, height) {
+      this.$refs.canvas.width = width;
+      this.$refs.canvas.height = height;
     },
     clearTextLayer() {
       while (this.$refs.textLayer.lastChild) {
@@ -146,10 +198,14 @@ export default {
         context.clearRect(0, 0, canvas.width, canvas.height);
       }
     },
+    updateLoading(loading) {
+      this.isLoading = loading;
+    },
     reset() {
-      this.clearTextLayer();
-      this.clearCanvasLayer();
-      this.loading = true;
+      this.resetStyle();
+      this.showTextLayer = false;
+      this.showCanvasLayer = false;
+      this.$el.removeAttribute('data-loaded');
     },
   },
 };
@@ -175,7 +231,7 @@ $loading-icon-radius-length: 16px;
   position: relative;
   overflow: hidden;
 
-  ::v-deep canvas {
+  canvas {
     margin: 0;
     display: block;
   }

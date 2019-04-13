@@ -4,7 +4,9 @@ import {
   DEFAULT_SCALE,
   CSS_UNITS,
   getVisibleElements,
-} from './ui_utils';
+} from './pdfjs/ui_utils';
+
+import { TextLayerBuilder } from 'pdfjs-dist/web/pdf_viewer';
 
 const pdfjsLib = require('pdfjs-dist');
 
@@ -14,7 +16,7 @@ class PDFApplication {
     this.appConfig = appConfig;
     this.eventBus = createEventBus();
     this.pdfDocument = null;
-    this._currentScale = UNKNOWN_SCALE;
+    this._currentScale = 1.5;
     this.currentPageNumber = 1;
     this._defaultViewport = null;
     this.pagesCount = 0;
@@ -158,10 +160,32 @@ class PDFApplication {
     );
   }
 
+  createTextLayerBuilder(
+    textLayerDiv,
+    pageIndex,
+    viewport,
+    enhanceTextSelection = false,
+  ) {
+    return new TextLayerBuilder({
+      textLayerDiv,
+      eventBus: this.eventBus,
+      pageIndex,
+      viewport,
+      findController: null,
+      enhanceTextSelection: this.isInPresentationMode
+        ? false
+        : enhanceTextSelection,
+    });
+  }
+
   get currentScale() {
     return this._currentScale !== UNKNOWN_SCALE
       ? this._currentScale
       : DEFAULT_SCALE;
+  }
+
+  get defaultViewport() {
+    return this._defaultViewport;
   }
 }
 

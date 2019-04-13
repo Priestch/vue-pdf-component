@@ -41,19 +41,12 @@ export default {
     return {
       pdfDocument: null,
       options: {
-        scale: 2,
+        scale: 1,
       },
-      pages: [],
-      currentPageNumber: 1,
-      defaultViewport: null,
-      pagesCount_: 0,
       app: null,
     };
   },
   computed: {
-    pagesCount() {
-      return this.pages.length;
-    },
     // TODO, this.app.visiblePages work?
     visiblePages() {
       return this.app.visiblePages;
