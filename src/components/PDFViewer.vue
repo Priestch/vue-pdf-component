@@ -2,15 +2,21 @@
   <div
     class="pdf-viewer"
     @scroll="onScroll">
-    <div
-      v-if="app && app.pdfDocument"
-      class="page-viewer-container">
-      <page
-        v-for="page in app.pages"
-        ref="pdfPage"
-        :visibility="isPageVisible(page.id)"
-        :key="page.id"
-        :page-number="page.id"></page>
+
+    <div class="pdf-viewer-sidebar"></div>
+    <div class="pdf-viewer-body">
+      <div class="page-view-container">
+        <div
+          v-if="app && app.pdfDocument"
+          class="page-view">
+          <page
+            v-for="page in app.pages"
+            ref="pdfPage"
+            :visibility="isPageVisible(page.id)"
+            :key="page.id"
+            :page-number="page.id"></page>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -89,7 +95,28 @@ export default {
 
 <style scoped lang="scss">
 .pdf-viewer {
+  position: relative;
+  width: 100%;
+  height: 100%;
   background: #404040;
   overflow: auto;
+
+  .pdf-viewer-body {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    min-width: 320px;
+
+    .page-view-container {
+      overflow: auto;
+      position: absolute;
+      top: $toolbar-height;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+  }
 }
 </style>

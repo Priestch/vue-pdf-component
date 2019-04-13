@@ -18,7 +18,6 @@ export default {
   left: 0;
   right: 0;
   height: $toolbar-height;
-  z-index: 9999;
   background: red;
   cursor: default;
 }

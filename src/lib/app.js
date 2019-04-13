@@ -16,7 +16,7 @@ class PDFApplication {
     this.appConfig = appConfig;
     this.eventBus = createEventBus();
     this.pdfDocument = null;
-    this._currentScale = 1.5;
+    this._currentScale = 1;
     this.currentPageNumber = 1;
     this._defaultViewport = null;
     this.pagesCount = 0;

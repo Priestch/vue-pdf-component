@@ -30,6 +30,17 @@ body {
   margin: 0;
 }
 
+* {
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<style lang="scss" scoped>
+#app {
+  height: 100%;
+}
+
 .pdf-viewer {
   height: 100vh;
   width: 80%;
