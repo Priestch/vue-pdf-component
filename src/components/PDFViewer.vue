@@ -5,17 +5,15 @@
 
     <div class="pdf-viewer-sidebar"></div>
     <div class="pdf-viewer-body">
-      <div class="page-view-container">
-        <div
-          v-if="app && app.pdfDocument"
-          class="page-view">
-          <page
-            v-for="page in app.pages"
-            ref="pdfPage"
-            :visibility="isPageVisible(page.id)"
-            :key="page.id"
-            :page-number="page.id"></page>
-        </div>
+      <div
+        v-if="app && app.pdfDocument"
+        class="page-view-container">
+        <page
+          v-for="page in app.pages"
+          ref="pdfPage"
+          :visibility="isPageVisible(page.id)"
+          :key="page.id"
+          :page-number="page.id"></page>
       </div>
     </div>
   </div>
@@ -103,20 +101,11 @@ export default {
 
   .pdf-viewer-body {
     position: absolute;
-    top: 0;
+    top: $toolbar-height;
     right: 0;
     bottom: 0;
     left: 0;
     min-width: 320px;
-
-    .page-view-container {
-      overflow: auto;
-      position: absolute;
-      top: $toolbar-height;
-      right: 0;
-      bottom: 0;
-      left: 0;
-    }
   }
 }
 </style>

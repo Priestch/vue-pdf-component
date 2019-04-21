@@ -223,6 +223,8 @@ $loading-icon-radius-length: 16px;
   background-color: white;
   margin: 1px auto -8px auto;
   overflow: visible;
+  width: 816px;
+  height: 1056px;
 }
 
 .page-view__canvas-wrapper {
