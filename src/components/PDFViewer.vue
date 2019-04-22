@@ -1,19 +1,25 @@
 <template>
   <div
-    class="pdf-viewer"
-    @scroll="onScroll">
+    class="pdf-viewer">
 
-    <div class="pdf-viewer-sidebar"></div>
-    <div class="pdf-viewer-body">
+    <div class="viewer-sidebar-container"></div>
+
+    <div
+      class="viewer-main-container">
       <div
-        v-if="app && app.pdfDocument"
-        class="page-view-container">
-        <page
-          v-for="page in app.pages"
-          ref="pdfPage"
-          :visibility="isPageVisible(page.id)"
-          :key="page.id"
-          :page-number="page.id"></page>
+        ref="viewer"
+        class="viewer-container"
+        @scroll="onScroll">
+        <div
+          v-if="app && app.pdfDocument"
+          class="viewer-pages">
+          <page
+            v-for="page in app.pages"
+            ref="pdfPage"
+            :visibility="isPageVisible(page.id)"
+            :key="page.id"
+            :page-number="page.id"></page>
+        </div>
       </div>
     </div>
   </div>
@@ -82,7 +88,7 @@ export default {
       return this.app.isPageVisible(page);
     },
     onScroll() {
-      this.app.handleScroll(this.$el);
+      this.app.handleScroll(this.$refs.viewer);
     },
     loadPage(pageNumber) {
       return this.app.pdfDocument.getPage(pageNumber);
@@ -97,9 +103,18 @@ export default {
   width: 100%;
   height: 100%;
   background: #404040;
-  overflow: auto;
 
-  .pdf-viewer-body {
+  .viewer-main-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    min-width: 320px;
+  }
+
+  .viewer-container {
+    overflow: auto;
     position: absolute;
     top: $toolbar-height;
     right: 0;

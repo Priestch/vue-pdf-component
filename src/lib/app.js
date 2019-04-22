@@ -96,7 +96,10 @@ class PDFApplication {
       };
     });
     if (!isInPresentationMode) {
-      return getVisibleElements(this.rootContainer, pageElements);
+      const viewerContainer = this.rootContainer.querySelector(
+        '.viewer-container',
+      );
+      return getVisibleElements(viewerContainer, pageElements);
     }
     // The algorithm in getVisibleElements doesn't work in all browsers and
     // configurations when presentation mode is active.
