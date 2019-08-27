@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import PDFViewer from '@/components/PDFViewer';
+import PDFViewer from './components/PDFViewer';
 
 export default {
   name: 'App',
