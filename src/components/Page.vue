@@ -3,29 +3,30 @@
     :data-page-number="pageNumber"
     :data-loaded="layersLoaded"
     :style="viewportStyle"
-    class="page-view">
+    class="page-view"
+  >
     <div
       v-if="!isLoading"
       ref="canvasLayer"
       :style="canvasWrapperStyle"
-      class="page-view__canvas-wrapper">
+      class="page-view__canvas-wrapper"
+    >
       <canvas
-        ref="canvas"
         :id="canvasId"
+        ref="canvas"
         :hidden="!canvasVisible"
-        :style="canvasStyle"></canvas>
+        :style="canvasStyle"
+      >
+      </canvas>
     </div>
     <div
       v-if="!isLoading"
       ref="textLayer"
-      class="page-view__text-wrapper"></div>
+      class="page-view__text-wrapper"
+    ></div>
 
-    <div
-      v-if="isLoading"
-      class="page-view__loading fa-2x">
-      <font-awesome-icon
-        :icon="['fas', 'spinner']"
-        pulse></font-awesome-icon>
+    <div v-if="isLoading" class="page-view__loading fa-2x">
+      <font-awesome-icon :icon="['fas', 'spinner']" pulse></font-awesome-icon>
     </div>
   </div>
 </template>

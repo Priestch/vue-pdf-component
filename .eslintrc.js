@@ -15,7 +15,7 @@ module.exports = {
       'error',
       {
         html: {
-          void: 'never',
+          'void': 'never',
           normal: 'never',
           component: 'never',
         },

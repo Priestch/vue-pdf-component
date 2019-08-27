@@ -1,24 +1,17 @@
 <template>
-  <div
-    class="pdf-viewer">
-
+  <div class="pdf-viewer">
     <div class="viewer-sidebar-container"></div>
 
-    <div
-      class="viewer-main-container">
-      <div
-        ref="viewer"
-        class="viewer-container"
-        @scroll="onScroll">
-        <div
-          v-if="app && app.pdfDocument"
-          class="viewer-pages">
+    <div class="viewer-main-container">
+      <div ref="viewer" class="viewer-container" @scroll="onScroll">
+        <div v-if="app && app.pdfDocument" class="viewer-pages">
           <page
             v-for="page in app.pages"
             ref="pdfPage"
-            :visibility="isPageVisible(page.id)"
             :key="page.id"
-            :page-number="page.id"></page>
+            :visibility="isPageVisible(page.id)"
+            :page-number="page.id"
+          ></page>
         </div>
       </div>
     </div>
